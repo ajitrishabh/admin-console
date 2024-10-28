@@ -14,14 +14,16 @@ const routes: Routes = [{
   path :'verified',
   component : VerifiedComponent,
   data: {
-    title: 'Verified',
-  }
+    
+  },
+  title: 'Verified KYC'
 },{
   path :'pending-kyc',
   component : PendingKycComponent,
   data: {
-    title: 'Pending KYC',
-  }
+    
+  },
+  title: 'Pending KYC'
 }];
 
 @NgModule({

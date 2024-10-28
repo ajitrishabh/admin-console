@@ -26,15 +26,15 @@ export class DefaultLayoutComponent implements OnInit  {
         url:null,
         children:[{
             id:null,
-            name:'All KYC Applications',
+            name:'All Applications',
             url:'customer/view'
         },{
             id:null,
-            name:'Approved KYC Applications',
+            name:'Verified KYC',
             url:'customer/verified'
         },{
             id:null,
-            name:'Pending KYC Applications',
+            name:'Pending KYC',
             url:'customer/pending-kyc'
         }]
     },{
@@ -55,16 +55,16 @@ export class DefaultLayoutComponent implements OnInit  {
             url:'loan/closed'
         }]
     }
-    // ,{
-    //     id:null,
-    //     name:'Payment',
-    //     url:null,
-    //     children:[{
-    //         id:null,
-    //         name:'Adjust',
-    //         url:'payment/adjust'
-    //     }]
-    // }
+    ,{
+        id:null,
+        name:'Payment',
+        url:null,
+        children:[{
+            id:null,
+            name:'Adjust',
+            url:'payment/adjust'
+        }]
+    }
     ]
   }
 

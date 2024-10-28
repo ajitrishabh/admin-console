@@ -62,8 +62,9 @@ const routes: Routes = [
         loadChildren: () =>
         CustomerModule,
         data: {
-          title: 'Customer',
-        }
+          
+        },
+        title: 'All Applications'
       }
     ]
   },
