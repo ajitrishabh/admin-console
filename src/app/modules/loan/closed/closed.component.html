@@ -1,0 +1,162 @@
+<div class="card">
+    <p-table
+        [value]="records"
+        [lazy]="true"
+        (onLazyLoad)="loadData($event)"
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [paginator]="true"
+        [sortField]="'id'"
+        [rows]="10"
+        [totalRecords]="totalRecords"
+        [loading]="loading"
+        styleClass="p-datatable-gridlines p-datatable-sm"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [resizableColumns]="true"
+        columnResizeMode="expand"
+        [scrollable]="true" 
+        scrollHeight="400px"
+>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Action</th>
+                <th pSortableColumn="fullname">Customer Name <p-sortIcon field="fullname"></p-sortIcon></th>
+                <th pSortableColumn="gender">Gender <p-sortIcon field="gender"></p-sortIcon></th>
+                <th pSortableColumn="loan_amount">Loan Amount <p-sortIcon field="loan_amount"></p-sortIcon></th>
+                <th pSortableColumn="tenure">Tenure <p-sortIcon field="tenure"></p-sortIcon></th>
+                <th pSortableColumn="interest_percent">Interest Percent <p-sortIcon field="interest_percent"></p-sortIcon></th>
+                <th pSortableColumn="interest_amount">Interest Amount <p-sortIcon field="interest_amount"></p-sortIcon></th>
+                <th pSortableColumn="processing_fee_percent">processing_fee_percent <p-sortIcon field="processing_fee_percent"></p-sortIcon></th>
+                <th pSortableColumn="processing_fee">processing_fee <p-sortIcon field="processing_fee"></p-sortIcon></th>
+                <th pSortableColumn="gst_percent">processing_fee_gst_percent <p-sortIcon field="gst_percent"></p-sortIcon></th>
+                <th pSortableColumn="gst_amount">processing_fee_gst <p-sortIcon field="gst_amount"></p-sortIcon></th>
+                <th pSortableColumn="disbursal_amount">disbursal_amount <p-sortIcon field="disbursal_amount"></p-sortIcon></th>
+                <th pSortableColumn="repayment_amount">repayment_amount <p-sortIcon field="repayment_amount"></p-sortIcon></th>
+                <th pSortableColumn="due_date">due_date <p-sortIcon field="due_date"></p-sortIcon></th>
+                <th pSortableColumn="disbursedAt">disbursedAt <p-sortIcon field="disbursedAt"></p-sortIcon></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+            <tr>
+                <td>
+                    <button class="btn btn-info btn-sm text-white" title="View details" (click)="approveloan(row,'detail')"><i class="fa fa-eye"></i></button>
+                    <a class="btn btn-primary btn-sm text-white ms-2" [routerLink]="['/payment/adjust', row.loan_id]" title="Adjust payments"><i class="fa fa-money"></i></a>
+                </td>
+                <td>{{row.fullname}}</td>
+                <td>{{row.gender}}</td>
+                <td>{{row.loan_amount}}</td>
+                <td>{{row.tenure}} Days</td>
+                <td>{{row.interest_percent}}%</td>
+                <td>{{row.interest_amount}}</td>
+                <td>{{row.processing_fee_percent}}%</td>
+                <td>{{row.processing_fee}}</td>
+                <td>{{row.gst_percent}}%</td>
+                <td>{{row.gst_amount}}</td>
+                <td>{{row.disbursal_amount}}</td>
+                <td>{{row.repayment_amount}}</td>
+                <td>{{row.due_date | date : 'dd-MM-Y'}}</td>
+                <td>{{row.disbursedAt | date : 'dd-MM-Y hh:mm a'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-table>
+</div>
+<p-dialog 
+    header="Loan details" 
+    [(visible)]="approvevisible" 
+    [modal]="true" 
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }" 
+    [style]="{ width: '50vw' }" 
+    [draggable]="false" 
+    [resizable]="false">
+    <form [formGroup]="cpForm" id="ngForm"  autocomplete="off">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Customer Name : </label>
+                    <p>{{selectedRow?.fullname}}</p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Bank name : </label>
+                    <p>{{selectedRow?.bank_name}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Account No. : </label>
+                    <p>{{selectedRow?.account_no}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>IFSC Code : </label>
+                    <p>{{selectedRow?.ifsc_code}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="">Loan Amount</label>
+                    <p>{{selectedRow?.loan_amount}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="">Tenure (days)</label>
+                    <p>{{selectedRow?.tenure}}</p>
+                </div>
+            </div>
+            <div class="col-md-4" *ngIf="selectedRow?.due_date">
+                <div class="form-group">
+                    <label for="">Due Date</label>
+                    <p>{{selectedRow?.due_date | date : 'd-MMM-Y'}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Processing Fee ({{selectedRow?.processing_fee_percent}}%) : </label>
+                    <p>{{selectedRow?.processing_fee | currency:'INR'}}</p>
+                </div>
+            </div>
+            <div class="col-md-4 ps-0">
+                <div class="form-group">
+                    <label>Processing Fee (GST {{selectedRow?.gst_percent}}%) : </label>
+                    <p>{{selectedRow?.gst_amount | currency:'INR'}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Interest ({{selectedRow?.interest_percent}}%) : </label>
+                    <p>{{selectedRow?.interest_amount | currency:'INR'}}</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Disbursal Amount : </label>
+                    <p>{{selectedRow?.disbursal_amount | currency:'INR'}}</p>
+                </div>
+            </div>
+            <div class="col-md-4 ps-0">
+                <div class="form-group">
+                    <label>Repayment Amount : </label>
+                    <p>{{selectedRow?.repayment_amount | currency:'INR'}}</p>
+                </div>
+            </div>
+        </div>
+        <hr/>
+    </form>
+</p-dialog>

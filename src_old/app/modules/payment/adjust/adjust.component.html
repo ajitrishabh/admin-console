@@ -1,0 +1,103 @@
+
+<div class="row">
+    <div class="col-md-6" *ngIf="loanData">
+        <div class="card">
+            <div class="card-body">
+                <div><strong>Customer Name :</strong> {{loanData.fullname}}</div>
+                <div><strong>Loan Amount :</strong> {{loanData.loan_amount | currency : 'INR'}}</div>
+                <div><strong>Tenure :</strong> {{loanData.tenure}} days</div>
+                <div><strong>Disbursal Amount :</strong> {{loanData.disbursal_amount | currency : 'INR'}}</div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6" *ngIf="loanData">
+        <div class="card">
+            <div class="card-body">
+                <div><strong>Disbursal Date :</strong> {{loanData.disbursedAt | date : 'd-MMM-Y'}}</div>
+                <div><strong>Due Date :</strong> {{loanData.due_date | date : 'd-MMM-Y'}}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="">Payment Received</label>
+                            <select name="paymentReceived" [(ngModel)]="form.payment_id" class="form-select" (change)="selectPayment()">
+                                <option value="">Select Payment</option>
+                                <option value="{{a.id}}" *ngFor="let a of paymentList">{{a.customer_paid_amount | currency : 'INR'}} (Balance - {{a.remaning_payment_amount | currency : 'INR'}})</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 pt-4">
+                            <h5>Total Payment Received : {{totalPaymentReceived | currency :'INR'}}</h5>
+                        </div>
+                        <div class="col-md-4 pt-4 text-end">
+                            <h5>Total Due : {{totalDue | currency :'INR'}}</h5>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-9 pt-4">
+                            <table class="table table-bordered">
+                                <tr class="bg-secondary">
+                                    <th colspan="6" class="text-center">Payment Details</th>
+                                </tr>
+                                <tr class="bg-secondary">
+                                    <th>Total Payment Amount</th>
+                                    <th>Paid Amount</th>
+                                    <th>Remaning Amount</th>
+                                    <th>Payment Mode</th>
+                                    <th>Transation Id</th>
+                                    <th>Payment Date</th>
+                                </tr>
+                                <tr *ngIf="selectedPaymentData">
+                                    <td>{{selectedPaymentData.customer_paid_amount}}</td>
+                                    <td>{{selectedPaymentData.total_paid}}</td>
+                                    <td>{{selectedPaymentData.remaning_payment_amount}}</td>
+                                    <td>{{selectedPaymentData.payment_method}}</td>
+                                    <td>{{selectedPaymentData.transaction_id}}</td>
+                                    <td>{{selectedPaymentData.payment_date | date : 'd-MMM-Y'}}</td>
+                                </tr>
+                                <tr *ngIf="!selectedPaymentData">
+                                    <td colspan="6" class="text-center">Payment not selected</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-3">
+                            <label for="">Charges</label>
+                            <select class="form-select" [(ngModel)]="form.charge_type" name="charge_type" (change)="getLoanDuesByCharge()" [disabled]="!form.payment_id">
+                                <option value="">Select Charge</option>
+                                <option value="{{a.charge_code}}" *ngFor="let a of chargeList">{{a.charge_type}}</option>
+                                <option value="principle">Principle</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">Due</label>
+                            <input type="number" class="form-control" name="due" [(ngModel)]="form.due" [readOnly]="true" [disabled]="true">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">Received</label>
+                            <p-inputNumber name="received" mode="decimal" [(ngModel)]="form.received" [min]="0" [max]="max_received" [disabled]="!form.charge_type" (onInput)="calculate()" (onBlur)="calculate()" />
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">Already Received</label>
+                            <input type="number" class="form-control" name="already_received" [(ngModel)]="form.already_received" [readOnly]="true" [disabled]="true">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="">Balance</label>
+                            <input type="number" class="form-control" name="balance" [(ngModel)]="form.balance" [readOnly]="true" [disabled]="true">
+                        </div>
+                        <div class="col-md-1">
+                            <button class="btn btn-success mt-4" (click)="adjustPayment()" [disabled]="!form.received">Apply</button>
+                        </div>
+                        
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

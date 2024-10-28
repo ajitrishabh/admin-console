@@ -1,0 +1,13 @@
+.badge{
+    padding:5px;
+    color:#fff;
+    width: 100%;
+    &.text-danger {
+        background-color: rgba(var(--cui-danger-rgb), var(--cui-text-opacity)) !important;
+        color:#fff !important;
+    }
+    &.text-success {
+        background-color: rgba(var(--cui-success-rgb), var(--cui-text-opacity)) !important;
+        color:#fff !important;
+    }
+}

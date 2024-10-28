@@ -1,0 +1,54 @@
+<div class="card">
+    <p-table
+        [value]="records"
+        [lazy]="true"
+        (onLazyLoad)="loadData($event)"
+        dataKey="id"
+        [tableStyle]="{ 'min-width': '75rem' }"
+        [paginator]="true"
+        [sortField]="'id'"
+        [rows]="10"
+        [totalRecords]="totalRecords"
+        [loading]="loading"
+        styleClass="p-datatable-gridlines p-datatable-sm"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [resizableColumns]="true"
+        columnResizeMode="expand"
+        [scrollable]="true" 
+        scrollHeight="400px"
+>
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Action</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Date of Birth</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Customer Type</th>
+                <th>Created At</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+            <tr>
+                <td class="text-center">
+                    <a [routerLink]="['/kyc', row.user_id]" class="btn btn-info btn-sm text-white" title="Verify KYC"><i class="fa fa-check"></i></a>
+                </td>
+                <td>{{row.fullname}}</td>
+                <td>{{row.gender}}</td>
+                <td>{{row.date_of_birth | date : 'd-MMM-Y'}}</td>
+                <td>{{global.getUserCommTypeData(row.user_comm,'email').value}}</td>
+                <td>{{global.getUserCommTypeData(row.user_comm,'mobile').value}}</td>
+                <td>{{row.usertype_lbl}}</td>
+                <td>{{row.createdAt | date : 'd-MMM-Y'}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text"></p-button>
+        </ng-template>
+        <ng-template pTemplate="paginatorright">
+            <p-button type="button" icon="pi pi-cloud" styleClass="p-button-text"></p-button>
+        </ng-template>
+    </p-table>
+</div>

@@ -1,0 +1,324 @@
+<div class="container-fluid user-profile-details-page bg-light py-3" *ngIf="data">
+    <div class="d-block verify-reject-btn-holder text-right mb-3" *ngIf="(data.kyc_verified!='verified' && getKycData(data.kyc,'SELFIE').verified=='verified' && (getKycData(data.kyc,'AADHAR').verified=='verified' || getKycData(data.kyc,'MANUAL_AADHAR').verified=='verified') && getKycData(data.kyc,'PAN').verified == 'verified' || getDocData(data.docs,'VIDEO').verified=='verified' && (data.user_type=='salaried' && getDocData(data.docs,'ID_CARD').verified=='verified') && (data.user_type=='student' && getDocData(data.docs,'STUDENT_ID_FRONT').verified=='verified'))" (click)="userVerify(data.user_id,1)">
+        <button class="btn btn-success px-3 me-3" >Verify</button>
+        <button class="btn btn-danger px-3" [disabled]="data.kyc_verified!='pending'" (click)="userVerify(data.user_id,0)">Reject</button>
+    </div>
+    <div class="row">
+        <!-- Sidebar Section -->
+        <div class="col-md-3  pr-md-0 left-user-personal-info-section">
+
+            <div class="col-12 card mb-3 p-2">
+                <div class="text-center user-profile-pic-name">
+                    <!-- Profile Image -->
+                    <div class="profile-image"
+                        style="background-image: url('{{getDocData(data.docs,'SELFIE').path}}'); background-position: center; background-size: cover; width: 150px; height: 150px; border-radius: 50%;">
+                    </div>
+                    <div class="badge text-success">{{getKycData(data.kyc,'SELFIE').verified}}</div>
+                    <div class="verify-reject-btn-holder text-center mb-3" *ngIf="getKycData(data.kyc,'SELFIE').verified !='verified'">
+                        <button class="btn btn-danger btn-sm btn-sm me-2" (click)="reject(data.kyc,'SELFIE',1)">Reject</button>
+                        <button class="btn btn-success btn-sm" (click)="verify(data.kyc,'SELFIE',1)">Verify</button>
+                    </div>
+                    <h4 class="profile-name">{{data.fullname}}</h4>
+
+                </div>
+
+                <ul class="list-unstyled">
+                    <li><strong class="label-profile-screen"> <img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >DOB:</strong> {{data.date_of_birth}}</li>
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Gender:</strong> {{data.gender}}</li>
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Status:</strong> {{data.marital_status}}</li>
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Father's Name:</strong> {{data.father_name}}</li>
+                </ul>
+                <h6>Contact Details</h6>
+                <ul class="list-unstyled">
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Mobile:</strong> {{global.getUserCommTypeData(data.user_comm,'mobile').value}}</li>
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Email:</strong> {{global.getUserCommTypeData(data.user_comm,'email').value}}</li>
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >WhatsApp:</strong> {{(global.getUserCommTypeData(data.user_comm,'whatsapp_mobile').verified)?'Verified':'Pending'}}</li>
+                    <li><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Language:</strong> {{data.preferred_language}}</li>
+                </ul>
+                <h6>Address</h6>
+                <address>{{data.permanent_address}}{{data.permanent_pincode}}</address>
+                <div *ngIf="getDocData(data.docs,'ADDRESS_PROOF').verified">
+                    <a href="{{getDocData(data.docs,'ADDRESS_PROOF').path}}" class="btn btn-outline-primary btn-sm py-2 px-3 mb-2 mt-2"><img src="../../../assets/img/calendar.png"
+                            height="18px"> Address Proof</a>
+                </div>
+                <div class="d-block mt-3 text-right" *ngIf="getDocData(data.docs,'ADDRESS_PROOF').verified && getDocData(data.docs,'ADDRESS_PROOF').verified!='verified'">
+                    <button class="btn btn-danger btn-sm btn-sm me-2" (click)="rejectDoc(data.docs,'ADDRESS_PROOF',3);">Reject</button>
+                    <button class="btn btn-success btn-sm" (click)="verifyDoc(data.docs,'ADDRESS_PROOF',3);">Verify</button>
+                </div>
+            </div>
+            <div class="col-12 card">
+
+
+
+                <div class="card-header">Location</div>
+                <div class="card-body px-0">
+                    <!-- <iframe
+                        src="../../../assets/img/https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15085.514878761034!2d73.02153418354492!3d19.04707943184654!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7e88a61a7c75b%3A0xa8bf1086ed66477!2sProlifiquetech!5e0!3m2!1sen!2sin!4v1725975566299!5m2!1sen!2sin"
+                        width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"></iframe> -->
+                    <div id="map" #map style="height:200px;width:100%;"></div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <!-- Main Content Section -->
+        <div class="col-md-9">
+            <div class="row">
+                <!-- CIBIL Score Section -->
+                <div class="col-md-2 pr-md-0">
+                    <div class="card mb-3 px-3">
+                        <div class="card-header px-0">CIBIL Score</div>
+                        <div class="card-body text-center px-0">
+                            <h5>{{data.cibil_score || 'Not available'}}</h5>
+                            <!-- <a href="#" class="link-info">Credit Report</a> -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aadhaar and PAN Section -->
+                <div class="col-md-5  pr-md-0">
+                    <div class="card mb-3 px-3">
+                        <div class="card-header px-0">Aadhaar Details <span class="badge text-success pending-verify-badge"><img
+                            src="../../../assets/img/wall-clock 1.png" height="15px">{{getKycData(data.kyc,'AADHAR').verified || getKycData(data.kyc,'MANUAL_AADHAR').verified}}</span></div>
+                        <div class="card-body px-0">
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Aadhaar Number:</strong> 
+                                <span *ngIf="getKycData(data.kyc,'AADHAR').verified">{{getKycData(data.kyc,'AADHAR').kyc_number}}</span>
+                                <span *ngIf="!getKycData(data.kyc,'AADHAR').verified && getKycData(data.kyc,'MANUAL_AADHAR').verified">{{getKycData(data.kyc,'MANUAL_AADHAR').aadhar}}</span>
+                            </p>
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Name as per Aadhaar:</strong> 
+                                <span *ngIf="getKycData(data.kyc,'AADHAR').verified">{{getOtherData(data.kyc,'AADHAR','name')}}</span>
+                                <span *ngIf="!getKycData(data.kyc,'AADHAR').verified && getKycData(data.kyc,'MANUAL_AADHAR').verified">{{getKycData(data.kyc,'MANUAL_AADHAR').name}}</span>
+                            </p>
+                            <p>
+                                <strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >DOB:</strong> 
+                                {{getOtherData(data.kyc,'AADHAR','dob')}}
+                            </p>
+                            <p>
+                                <strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Address:</strong> 
+                                {{getOtherData(data.kyc,'AADHAR','address')}}
+                            </p>
+                            <!-- <p>
+                                <strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Mobile:</strong> 
+                                {{getOtherData(data.kyc,'AADHAR','dob')}}
+                            </p>
+                            <p>
+                                <strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Email:</strong> 
+                                {{global.getUserCommTypeData(data.user_comm,'email').value}}
+                            </p> -->
+                            <p *ngIf="!getKycData(data.kyc,'AADHAR').verified && getKycData(data.kyc,'MANUAL_AADHAR').verified"><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Father Name:</strong> {{getKycData(data.kyc,'MANUAL_AADHAR').father_name}}</p>
+                            <p *ngIf="getKycData(data.kyc,'AADHAR').verified"><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Father Name:</strong> {{getOtherData(data.kyc,'AADHAR','fatherName')}}</p>
+                            <div *ngIf="getKycData(data.kyc,'MANUAL_AADHAR').verified">
+                                <a href="{{getDocData(data.docs,'AADHAR_FRONT').path}}" class="btn btn-outline-primary btn-sm py-2 px-3 mb-2 mt-2"><img src="../../../assets/img/calendar.png"
+                                        height="18px"> Aadhaar Front Side</a>
+                                <a href="{{getDocData(data.docs,'AADHAR_BACK').path}}" class="btn btn-outline-primary btn-sm  py-2 px-3"><img src="../../../assets/img/calendar.png"
+                                        height="18px"> Aadhaar Back Side</a>
+                            </div>
+                            <div class="d-block mt-3 text-right" *ngIf="getKycData(data.kyc,'AADHAR').verified !='verified'">
+                                <button class="btn btn-danger btn-sm btn-sm me-2" (click)="reject(data.kyc,'AADHAR',1)">Reject</button>
+                                <button class="btn btn-success btn-sm" (click)="verify(data.kyc,'AADHAR',1)">Verify</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5 ">
+                    <div class="card mb-3 px-3">
+                        <div class="card-header px-0">PAN Details <span class="badge text-success pending-verify-badge"><img
+                            src="../../../assets/img/wall-clock 1.png" height="15px">{{getKycData(data.kyc,'PAN').verified}}</span></div>
+                        <div class="card-body px-0">
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >PAN Number:</strong> {{getKycData(data.kyc,'PAN').kyc_number}}</p>
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Name as per PAN:</strong> {{getOtherData(data.kyc,'PAN','full_name')}}</p>
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >DOB:</strong> {{getOtherData(data.kyc,'PAN','dob')}}</p>
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Mobile:</strong> {{getOtherData(data.kyc,'PAN','phone_number')}}</p>
+                            <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Address:</strong> {{getOtherData(data.kyc,'PAN','address')?.full || ''}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employment, Bank and Reference Details -->
+            <div class="row">
+                <div class="col-md-7 mr-md-0">
+                    <div class="row">
+                        <div class="col-md-12 pr-md-0">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">Video  <span class="badge text-success pending-verify-badge"><img
+                                    src="../../../assets/img/wall-clock 1.png" height="15px">{{getKycData(data.kyc,'VIDEO').verified}}</span></div>
+                                <div class="card-body px-0">
+                                    <video width="100%" height="240" controls>
+                                        <source src="{{getDocData(data.docs,'VIDEO').path}}" type="video/mp4">
+                                    </video>
+                                    <div class="d-block mt-3 text-right" *ngIf="getKycData(data.kyc,'VIDEO').verified !='verified'">
+                                        <button class="btn btn-danger btn-sm btn-sm me-2" (click)="reject(data.kyc,'VIDEO',1)">Reject</button>
+                                        <button class="btn btn-success btn-sm" (click)="verify(data.kyc,'VIDEO',1)">Verify</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 pr-md-0">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">SMS Details</div>
+                                <div class="card-body px-0">
+                                    <table class="d-block table-striped">
+                                        <tr *ngFor="let a of data.messages">
+                                            <td class="py-2">{{a}}</td>
+                                        </tr>
+                                       
+                                    </table>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="row">
+                        <div class="col-md-12" *ngIf="data.user_type=='salaried'">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">Employment Details <span class="badge badge-warning pending-verify-badge"><img
+                                            src="../../../assets/img/wall-clock 1.png" height="15px">Pending Verification</span></div>
+                                <div class="card-body px-0">
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Organization Name:</strong> {{data.organization_name}}
+                                    </p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Designation:</strong> {{data.designation}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Reference Name:</strong> {{data.contact_person_name}}
+                                    </p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Reference Email
+                                            ID:</strong>{{data.contact_person_email}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Reference Phone:</strong> {{data.contact_person_mobile}}</p>
+                                    <a href="{{getDocData(data.docs,'SALARY_SLIP').path}}" class="btn btn-outline-primary btn-sm  py-2 px-3"><img src="../../../assets/img/calendar.png"
+                                        height="18px"> Salary Slip</a>
+                                    <a href="{{getDocData(data.docs,'ID_CARD').path}}" class="btn btn-outline-primary btn-sm  py-2 px-3"><img src="../../../assets/img/calendar.png"
+                                            height="18px"> ID Card</a>
+                                    <div class="d-block mt-3 text-right" *ngIf="getDocData(data.docs,'SALARY_SLIP').verified && getDocData(data.docs,'SALARY_SLIP').verified!='verified'">
+                                        <button class="btn btn-danger btn-sm btn-sm me-2" (click)="rejectDoc(data.docs,'ID_CARD',3);rejectDoc(data.docs,'SALARY_SLIP',3);">Reject</button>
+                                        <button class="btn btn-success btn-sm" (click)="verifyDoc(data.docs,'ID_CARD',3);verifyDoc(data.docs,'SALARY_SLIP',3);">Verify</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">Bank Statement <span class="badge badge-warning pending-verify-badge"><img
+                                            src="../../../assets/img/wall-clock 1.png" height="15px"></span></div>
+                                <div class="card-body px-0">
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Bank Name:</strong>
+                                        {{data.bank_name}}</p>
+                                    <a href="{{getDocData(data.docs,'ACCOUNT_STATEMENT').path}}" class="btn btn-outline-primary btn-sm mt-3"><img src="../../../assets/img/Document.png"
+                                            height="22px">View Bank Statement</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12  pr-md-0">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">Bank Account Details</div>
+                                <div class="card-body px-0">
+                                    <div class="row">
+                                        <div class="col-md-12 mt-1" *ngFor="let a of data.banks">
+                                            <div class="card">
+                                                <div class="card-custom">
+                                                    <div class=" py-3 align-items-center">
+                                                        <!-- Icon and Badge on the left side -->
+                                                        <img src="../../../assets/img/bank.png" height="50px">
+                                                        <div class="d-block mt-2 text-center">
+
+                                                            <span
+                                                                class="badge text-success float-none">{{a.status ? 'Verified' : 'Pending'}}</span>
+                                                        </div>
+
+                                                    </div>
+                                                    <!-- Content on the right side -->
+                                                    <div>
+                                                        <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >{{a.bank_name}}</strong></p>
+                                                        <p>Account Holder Name: {{a.acc_holder_name}}</p>
+                                                        <p>Account No: {{a.account_no}}</p>
+                                                        <p>IFSC: {{a.ifsc_code}}</p>
+                                                        <p *ngIf="!a.status">Reason: {{a.reason}}</p>
+                                                        <div class="d-block mt-3 text-right" *ngIf="!a.status">
+                                                            <button class="btn btn-success btn-sm" (click)="verifyBank(a)">Verify</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-12">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">References <span class="badge badge-warning pending-verify-badge"><img
+                                            src="../../../assets/img/wall-clock 1.png" height="15px">Pending Verification</span></div>
+                                <div class="card-body px-0">
+                                    <div class="d-block mb-3 ref-card"  *ngFor="let a of data.references;let i=index">
+                                        <div class="row">
+                                            <div class="col-6 ref-title col-12 ref-title d-flex flex-row" style="justify-content: space-between;">
+                                                <div>Reference {{(i+1)}}</div>
+                                                <div *ngIf="a.status !='verified'">
+                                                    <button class="btn btn-danger btn-sm btn-sm me-2" (click)="submitReference(a,0);">Reject</button>
+                                                    <button class="btn btn-success btn-sm" (click)="submitReference(a,1);">Verify</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Refer To:</strong> {{a.refer_to}}</p>
+                                        <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Person Name:</strong>  {{a.person_name}}</p>
+                                        <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Contact No.:</strong>  {{a.mobile}}</p>
+                                        <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Status:  {{a.status || 'Pending'}}</strong></p>
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12" *ngIf="data.user_type=='student'">
+                            <div class="card mb-3 px-3">
+                                <div class="card-header px-0">Student Details <span class="badge badge-warning pending-verify-badge"><img
+                                            src="../../../assets/img/wall-clock 1.png" height="15px">Pending Verification</span></div>
+                                <div class="card-body px-0">
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >College Name:</strong> {{data.collage_name}}
+                                    </p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >College PIN:</strong> {{data.collage_pincode}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Degree Name:</strong> {{data.degree_name}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Degree type:</strong> {{data.degree_type}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Any Specialization:</strong>
+                                        {{data.specialisation}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Attendance Type:</strong> {{data.attendance_type}}</p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Degree Start Date:</strong> {{data.degree_start_date | date : 'd-M-Y'}}
+                                    </p>
+                                    <p><strong class="label-profile-screen"><img src="../../../assets/img/calendar.png" class="me-1 list-icon"  >Degree End Date:</strong> {{data.degree_end_date | date : 'd-M-Y'}}
+                                    </p>
+                                    <div class="d-block text-center my-3">
+                                        <a href="{{getDocData(data.docs,'STUDENT_ID_FRONT').path}}" class="btn btn-outline-primary btn-sm py-2 px-3 mb-2"><img
+                                                src="../../../assets/img/calendar.png" height="18px"> ID Card Front Side</a>
+                                        <a href="{{getDocData(data.docs,'STUDENT_ID_BACK').path}}" class="btn btn-outline-primary btn-sm  py-2 px-3"><img
+                                                src="../../../assets/img/calendar.png" height="18px"> ID Card Back Side</a>
+                                    </div>
+                                    <div class="d-block text-right" *ngIf="getDocData(data.docs,'STUDENT_ID_FRONT').verified && getDocData(data.docs,'STUDENT_ID_FRONT').verified!='verified'">
+                                        <button class="btn btn-danger btn-sm btn-sm me-2" (click)="rejectDoc(data.docs,'STUDENT_ID_FRONT',3);rejectDoc(data.docs,'STUDENT_ID_BACK',3);">Reject</button>
+                                        <button class="btn btn-success btn-sm" (click)="verifyDoc(data.docs,'STUDENT_ID_FRONT',3);verifyDoc(data.docs,'STUDENT_ID_BACK',3);">Verify</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="d-block verify-reject-btn-holder text-right mb-3" *ngIf="(data.kyc_verified!='verified' && getKycData(data.kyc,'SELFIE').verified=='verified' && (getKycData(data.kyc,'AADHAR').verified=='verified' || getKycData(data.kyc,'MANUAL_AADHAR').verified=='verified') && getKycData(data.kyc,'PAN').verified == 'verified' || getDocData(data.docs,'VIDEO').verified=='verified' && (data.user_type=='salaried' && getDocData(data.docs,'ID_CARD').verified=='verified') && (data.user_type=='student' && getDocData(data.docs,'STUDENT_ID_FRONT').verified=='verified'))" (click)="userVerify(data.user_id,1)">
+        <button class="btn btn-success px-3 me-3" >Verify</button>
+        <button class="btn btn-danger px-3" [disabled]="data.kyc_verified!='pending'" (click)="userVerify(data.user_id,0)">Reject</button>
+    </div>
+</div>
