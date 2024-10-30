@@ -41,14 +41,14 @@ const routes: Routes = [
           title: 'Loans',
         }
       },
-      {
-        path: 'payment',
-        loadChildren: () =>
-        PaymentModule,
-        data: {
-          title: 'Payment',
-        }
-      },
+      // {
+      //   path: 'payment',
+      //   loadChildren: () =>
+      //   PaymentModule,
+      //   data: {
+      //     title: 'Payment',
+      //   }
+      // },
       {
         path: 'kyc',
         loadChildren: () =>

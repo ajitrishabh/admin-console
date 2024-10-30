@@ -7,20 +7,23 @@ const routes: Routes = [{
   path :'view/loan/:loan_id',
   component : ViewComponent,
   data: {
-    title: 'Loan Payments',
-  }
+    
+  },
+  title: 'Loan Payments'
 },{
   path :'view',
   component : ViewComponent,
   data: {
-    title: 'Customer Payments',
-  }
+    
+  },
+  title: 'Customer Payments'
 },{
   path :'adjust/:loan_id',
   component : AdjustComponent,
   data: {
-    title: 'Adjust Payment',
-  }
+    
+  },
+  title: 'Adjust Payment'
 }];
 
 @NgModule({

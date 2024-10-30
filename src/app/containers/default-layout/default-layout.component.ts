@@ -55,16 +55,16 @@ export class DefaultLayoutComponent implements OnInit  {
             url:'loan/closed'
         }]
     }
-    ,{
-        id:null,
-        name:'Payment',
-        url:null,
-        children:[{
-            id:null,
-            name:'Adjust',
-            url:'payment/adjust'
-        }]
-    }
+    // ,{
+    //     id:null,
+    //     name:'Payment',
+    //     url:null,
+    //     children:[{
+    //         id:null,
+    //         name:'Adjust',
+    //         url:'payment/adjust'
+    //     }]
+    // }
     ]
   }
 
