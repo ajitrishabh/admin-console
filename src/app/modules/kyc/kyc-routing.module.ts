@@ -6,8 +6,9 @@ const routes: Routes = [{
   path :':user_id',
   component : KycComponent,
   data: {
-    title: 'View',
-  }
+    
+  },
+  title: 'View'
 }];
 
 @NgModule({
