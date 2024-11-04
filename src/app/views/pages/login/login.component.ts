@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { MenuItem } from 'primeng/api/menuitem';
 import { DataService } from 'src/app/services/data.service';
 import { GlobalService } from 'src/app/services/global.service';
+// import { ToastModule } from '@coreui/angular';
+
 
 @Component({
   selector: 'app-login',
@@ -16,15 +18,19 @@ export class LoginComponent {
   
   constructor(private router:Router,private dataService:DataService, private global:GlobalService) {
     
-   }
+    global.checkLogin() //check if session exist & redirect -ajit
+  
+  }
+  
 
   login() {
-    if(this.email == 'admin@yopmail.com' && this.password == '1234') {
+    if(this.email == 'admin@pocketme.in' && this.password == 'admin@123') {
       localStorage.setItem('usersession', this.email);
       this.router.navigate(['/customer/view']) 
     }
     else {
-      alert('Email and password is wrong');
+      alert('Please enter username and password.');
+      
     }
     // this.dataService.login({
     //   email: this.email,

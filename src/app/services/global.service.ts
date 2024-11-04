@@ -8,7 +8,27 @@ export class GlobalService {
     public filterVisible:boolean = false;
     public filterButton:boolean = false;
 
-    constructor(private router:Router) {}
+    constructor(private router:Router) {
+      this.checkLogin()     
+
+    }
+    
+    //added by ajit
+    public checkLogin(){
+      let  username = localStorage.getItem('usersession')
+      // console.log(username)
+      if(username == 'admin@pocketme.in'){
+        // return username
+        // console.log('match');
+        this.router.navigate(['/customer/view'])
+        
+      }
+      else{
+        // console.log('didnot');
+        this.router.navigate(['/login'])
+        
+      }
+    } 
 
     public setUserData(data:any){
         localStorage.setItem('userdata',JSON.stringify(data));
